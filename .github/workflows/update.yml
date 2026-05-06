@@ -5,17 +5,12 @@ on:
     - cron: '0 * * * *'
   workflow_dispatch:
 
-# 這個設定允許這個 workflow 部署到 GitHub Pages
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,30 +25,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install yfinance pandas numpy scikit-learn plotly
 
-      - name: Ensure docs directory exists
-        run: |
-          mkdir -p docs
-          # 放一個 .nojekyll，以防萬一
-          touch docs/.nojekyll
+      - name: Create nojekyll file
+        run: touch .nojekyll
 
       - name: Run Python script
         run: |
           python main.py
 
-      - name: Upload artifact for GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # 將 docs 資料夾打包準備部署
-          path: './docs'
-
-  deploy:
-    # 這是專門用來發布的第二個 Job
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build # 必須等上面的 build 跑完
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add index.html .nojekyll
+          git commit -m "Auto-update dashboard via GitHub Actions" || echo "No changes to commit"
+          git push
