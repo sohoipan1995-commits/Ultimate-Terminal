@@ -786,8 +786,7 @@ def main():
     }});
 </script>
 </body></html>"""
-        with open('index.html', 'w', encoding='utf-8') as f:
-        f.write(html)
+    with open('index.html', 'w', encoding='utf-8') as f:
         f.write(html)
 
 if __name__ == "__main__":
