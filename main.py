@@ -296,7 +296,6 @@ def getsubscores(r):
 def fmtnum(x, nd=1): return str(round(float(x), nd)) if not pd.isna(x) else "N/A"
 
 def main():
-    os.makedirs('docs', exist_ok=True)
     tophsi, topndx, topspx, topdji = getdynamictopturnovertickers()
     alltickers = list(dict.fromkeys(BASETICKERS + tophsi + topndx + topspx + topdji))
     macrodata, sectorsperf = getmacroandsectors()
@@ -787,7 +786,8 @@ def main():
     }});
 </script>
 </body></html>"""
-    with open('docs/index.html', 'w', encoding='utf-8') as f:
+        with open('index.html', 'w', encoding='utf-8') as f:
+        f.write(html)
         f.write(html)
 
 if __name__ == "__main__":
